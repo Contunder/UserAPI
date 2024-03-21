@@ -1,7 +1,8 @@
 package com.microservice.user.user.domain.usecase;
 
-import com.microservice.user.user.domain.entities.User;
-import com.microservice.user.user.domain.ports.UserPorts;
+import com.microservice.user.domain.entities.User;
+import com.microservice.user.domain.ports.UserPorts;
+import com.microservice.user.domain.usecase.DeleteUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
