@@ -1,5 +1,6 @@
 package com.microservice.user.security;
 
+import com.microservice.user.domain.gateway.UserDetailsDto;
 import com.microservice.user.utils.JsonBodyHandler;
 import io.micrometer.common.lang.NonNullApi;
 import jakarta.servlet.FilterChain;
@@ -7,10 +8,13 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -20,7 +24,9 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 @NonNullApi
 @Component
@@ -47,7 +53,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if(StringUtils.hasText(token) && jwtTokenProvider.validateToken(token)){
 
-            UserDetails userDetails;
+            UserDetailsDto userDetailsDto;
             HttpRequest getUserDetails = HttpRequest.newBuilder(
                             URI.create(authentificationUserDetailsURL)
                     )
@@ -56,13 +62,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     .GET()
                     .build();
 
-            var accountShipToResponseFuture = client.sendAsync(getUserDetails, new JsonBodyHandler<>(UserDetails.class));
+            var accountShipToResponseFuture = client.sendAsync(getUserDetails, new JsonBodyHandler<>(UserDetailsDto.class));
 
             try {
-                userDetails = accountShipToResponseFuture.get().body().get();
+                userDetailsDto = accountShipToResponseFuture.get().body().get();
             } catch (InterruptedException | ExecutionException e) {
                 throw new RuntimeException(e);
             }
+
+            Set<GrantedAuthority> authorities = userDetailsDto
+                    .getRoles()
+                    .stream()
+                    .map((role) -> new SimpleGrantedAuthority(role.getName()))
+                    .collect(Collectors.toSet());
+
+            UserDetails userDetails = new org.springframework.security.core.userdetails.User(userDetailsDto.getEmail(),
+                    userDetailsDto.getPassword(),
+                    authorities);
 
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                 userDetails,
