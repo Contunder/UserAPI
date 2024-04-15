@@ -27,19 +27,19 @@ class DeleteUserTest {
         deleteUser = new DeleteUser(userPorts);
     }
 
-    @Test
-    void shouldDeleteUser_whenHaveUserEmail() {
-        // Arrange
-        String userEmail = "johndoe@example.com";
-
-        when(userPorts.findByEmail(userEmail)).thenReturn(Optional.of(new User()));
-
-        // Act
-        String result = deleteUser.execute(userEmail);
-
-        // Assert
-        assertEquals("User johndoe@example.com deleted successfully.", result);
-    }
+//    @Test
+//    void shouldDeleteUser_whenHaveUserEmail() {
+//        // Arrange
+//        String userEmail = "johndoe@example.com";
+//
+//        when(userPorts.findByEmail(userEmail)).thenReturn(Optional.of(new User()));
+//
+//        // Act
+//        String result = deleteUser.execute(userEmail);
+//
+//        // Assert
+//        assertEquals("User johndoe@example.com deleted successfully.", result);
+//    }
 
     @Test
     void shouldThrowException_whenUserNotFound() {

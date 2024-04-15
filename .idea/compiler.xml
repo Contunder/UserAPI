@@ -7,11 +7,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="springboot-hotel-rest-api" />
+        <module name="springboot-user-rest-api" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="springboot-user-rest-api" target="21" />
+      <module name="springboot-hotel-rest-api" target="21" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
