@@ -8,9 +8,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -53,44 +51,58 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if(StringUtils.hasText(token) && jwtTokenProvider.validateToken(token)){
 
-            UserDetailsDto userDetailsDto;
-            HttpRequest getUserDetails = HttpRequest.newBuilder(
-                            URI.create(authentificationUserDetailsURL)
-                    )
-                    .header("accept", "application/json")
-                    .header("Authorization", "Bearer " + token)
-                    .GET()
-                    .build();
+            UserDetailsDto userDetailsDto = getUserDetailsDtoFromAuthentificationAPI(token);
+            setAuthentification(request, userDetailsDto);
 
-            var accountShipToResponseFuture = client.sendAsync(getUserDetails, new JsonBodyHandler<>(UserDetailsDto.class));
-
-            try {
-                userDetailsDto = accountShipToResponseFuture.get().body().get();
-            } catch (InterruptedException | ExecutionException e) {
-                throw new RuntimeException(e);
-            }
-
-            Set<GrantedAuthority> authorities = userDetailsDto
-                    .getRoles()
-                    .stream()
-                    .map((role) -> new SimpleGrantedAuthority(role.getName()))
-                    .collect(Collectors.toSet());
-
-            UserDetails userDetails = new org.springframework.security.core.userdetails.User(userDetailsDto.getEmail(),
-                    userDetailsDto.getPassword(),
-                    authorities);
-
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                userDetails,
-                null,
-                userDetails.getAuthorities()
-            );
-
-            authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private UserDetailsDto getUserDetailsDtoFromAuthentificationAPI(String token) {
+
+        UserDetailsDto userDetailsDto;
+        HttpRequest getUserDetails = HttpRequest.newBuilder(
+                        URI.create(authentificationUserDetailsURL)
+                )
+                .header("accept", "application/json")
+                .header("Authorization", "Bearer " + token)
+                .GET()
+                .build();
+
+        var accountShipToResponseFuture = client.sendAsync(getUserDetails, new JsonBodyHandler<>(UserDetailsDto.class));
+
+        try {
+            userDetailsDto = accountShipToResponseFuture.get().body().get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
+
+        return userDetailsDto;
+
+    }
+
+    private void setAuthentification(HttpServletRequest request, UserDetailsDto userDetailsDto) {
+
+        Set<GrantedAuthority> authorities = userDetailsDto
+                .getRoles()
+                .stream()
+                .map((role) -> new SimpleGrantedAuthority(role.getName()))
+                .collect(Collectors.toSet());
+
+        UserDetails userDetails = new org.springframework.security.core.userdetails.User(userDetailsDto.getEmail(),
+                userDetailsDto.getPassword(),
+                authorities);
+
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+            userDetails,
+            null,
+            userDetails.getAuthorities()
+        );
+
+        authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
     }
 
     public String getTokenFromRequest(HttpServletRequest request){
