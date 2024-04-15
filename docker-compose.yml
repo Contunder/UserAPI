@@ -11,7 +11,7 @@ services:
       MYSQL_USER: KMPCube
       MYSQL_PASSWORD: KMPCube
     ports:
-      - "3306:3306"
+      - "3306:3307"
     volumes:
       - dbdata:/var/lib/mysql
   phpmyadmin:
@@ -26,12 +26,12 @@ services:
       PMA_ARBITRARY: 1
     restart: always
     ports:
-      - 8081:80
+      - 8081:81
   cubeapi:
     platform: linux/amd64
     image: valden01/user
     ports:
-      - 8080:8080
+      - 8081:8081
     environment:
       DB_SERVER: mysqldb
       DB_NAME: CUBE_KMP
