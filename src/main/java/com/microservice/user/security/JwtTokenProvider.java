@@ -1,6 +1,6 @@
 package com.microservice.user.security;
 
-import com.microservice.user.exception.UserAPIException;
+import com.microservice.user.application.exception.UserAPIException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;

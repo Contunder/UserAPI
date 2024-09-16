@@ -1,8 +1,8 @@
 package com.microservice.user.domain.usecase;
 
 import com.microservice.user.domain.entities.User;
-import com.microservice.user.domain.gateway.UserDto;
-import com.microservice.user.domain.mapper.UserMapper;
+import com.microservice.user.application.entity.UserDto;
+import com.microservice.user.application.mapper.UserMapper;
 import com.microservice.user.domain.ports.UserPorts;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
@@ -14,14 +14,12 @@ import java.util.stream.Collectors;
 public class AllUser {
 
     private final UserPorts userPorts;
-    private final UserMapper userMapper;
 
     public AllUser(UserPorts userPorts){
         this.userPorts = userPorts;
-        this.userMapper = new UserMapper();
     }
 
-    public List<UserDto> execute(String userEmail) {
+    public List<User> execute(String userEmail) {
 
         User actualUser = userPorts.findByEmail(userEmail)
                 .orElseThrow(() ->
@@ -29,7 +27,6 @@ public class AllUser {
 
         return userPorts.findAll().stream()
                 .filter(user -> user != actualUser)
-                .map(userMapper::mapToDTO)
                 .collect(Collectors.toList());
     }
 

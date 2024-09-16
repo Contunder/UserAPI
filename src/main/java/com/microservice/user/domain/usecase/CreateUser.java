@@ -2,9 +2,9 @@ package com.microservice.user.domain.usecase;
 
 import com.microservice.user.domain.entities.User;
 import com.microservice.user.domain.gateway.TrackingDTO;
-import com.microservice.user.domain.gateway.UserDto;
+import com.microservice.user.application.entity.UserDto;
 import com.microservice.user.domain.mapper.TrackingMapper;
-import com.microservice.user.domain.mapper.UserMapper;
+import com.microservice.user.application.mapper.UserMapper;
 import com.microservice.user.domain.ports.UserPorts;
 import com.microservice.user.utils.JsonBodyHandler;
 import org.json.JSONObject;
@@ -18,7 +18,6 @@ import java.net.http.HttpRequest;
 @Component
 public class CreateUser {
     private final UserPorts userPorts;
-    private final UserMapper userMapper;
 
     private final TrackingMapper trackingMapper;
     private final HttpClient client;
@@ -28,25 +27,24 @@ public class CreateUser {
 
     public CreateUser(UserPorts userPorts) {
         this.userPorts = userPorts;
-        this.userMapper = new UserMapper();
         this.trackingMapper = new TrackingMapper();
         this.client = HttpClient.newHttpClient();
     }
 
-    public UserDto execute(UserDto userDto) {
+    public User execute(User user) {
 
-        User user = userPorts.save(userMapper.mapToModel(userDto));
+        User newUser = userPorts.save(user);
 
         HttpRequest getUserDetails = HttpRequest.newBuilder(
                         URI.create(trackingURL)
                 )
                 .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(new JSONObject(trackingMapper.mapToDto(user, "Create User")).toString()))
+                .POST(HttpRequest.BodyPublishers.ofString(new JSONObject(trackingMapper.mapToDto(newUser, "Create User")).toString()))
                 .build();
 
         client.sendAsync(getUserDetails, new JsonBodyHandler<>(TrackingDTO.class));
 
-        return userMapper.mapToDTO(user);
+        return newUser;
     }
 
 }

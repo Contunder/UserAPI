@@ -1,8 +1,10 @@
-package com.microservice.user.domain.mapper;
+package com.microservice.user.application.mapper;
 
-import com.microservice.user.domain.gateway.UserDto;
+import com.microservice.user.application.entity.UserDto;
 import com.microservice.user.domain.entities.User;
+import org.springframework.stereotype.Component;
 
+@Component
 public class UserMapper {
 
     public UserDto mapToDTO(User user){

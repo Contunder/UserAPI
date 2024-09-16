@@ -1,4 +1,4 @@
-package com.microservice.user.domain.gateway;
+package com.microservice.user.application.entity;
 
 import lombok.Builder;
 import lombok.Data;
