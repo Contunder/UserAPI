@@ -1,7 +1,7 @@
 package com.microservice.user.application.mapper;
 
 import com.microservice.user.application.entity.UserDto;
-import com.microservice.user.infrastructure.entity.User;
+import com.microservice.user.domain.entities.User;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -29,18 +29,6 @@ public class UserMapper {
                 .city(userDto.getCity())
                 .email(userDto.getEmail())
                 .build();
-    }
-
-    public User mapUpdateToModel(UserDto userDto, User user) {
-        user.setName(userDto.getName());
-        user.setLastName(userDto.getLastName());
-        user.setBirthday(userDto.getBirthday());
-        user.setAddress(userDto.getAddress());
-        user.setZipCode(userDto.getZipCode());
-        user.setCity(userDto.getCity());
-        user.setEmail(userDto.getEmail());
-
-        return user;
     }
 
 }

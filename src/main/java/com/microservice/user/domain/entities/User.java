@@ -1,7 +1,10 @@
 package com.microservice.user.domain.entities;
 
-import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.sql.Date;
 
@@ -20,6 +23,5 @@ public class User {
     private String zipCode;
     private String city;
     private String email;
-    private Role role;
 
 }

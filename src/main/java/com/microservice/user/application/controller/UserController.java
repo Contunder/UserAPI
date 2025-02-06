@@ -1,11 +1,16 @@
 package com.microservice.user.application.controller;
 
+import com.microservice.user.application.entity.UserDto;
 import com.microservice.user.application.mapper.UserMapper;
 import com.microservice.user.application.presenter.Presenter;
-import com.microservice.user.domain.usecase.*;
 import com.microservice.user.application.security.JwtAuthenticationFilter;
 import com.microservice.user.application.security.JwtTokenProvider;
-import com.microservice.user.application.entity.UserDto;
+import com.microservice.user.domain.exception.UserAPIException;
+import com.microservice.user.domain.usecase.AllUser;
+import com.microservice.user.domain.usecase.CreateUser;
+import com.microservice.user.domain.usecase.DeleteUser;
+import com.microservice.user.domain.usecase.UpdateUser;
+import com.microservice.user.domain.usecase.UserByEmail;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -33,7 +38,7 @@ public class UserController {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserMapper userMapper;
 
-    public UserController(UserByEmail userByEmail, Presenter presenter, AllUser allUser, DeleteUser deleteUser, UpdateUser updateUser, CreateUser createUser, JwtAuthenticationFilter jwtAuthenticationFilter, JwtTokenProvider jwtTokenProvider, UserMapper userMapper){
+    public UserController(UserByEmail userByEmail, Presenter presenter, AllUser allUser, DeleteUser deleteUser, UpdateUser updateUser, CreateUser createUser, JwtAuthenticationFilter jwtAuthenticationFilter, JwtTokenProvider jwtTokenProvider, UserMapper userMapper) {
         this.userByEmail = userByEmail;
         this.presenter = presenter;
         this.allUser = allUser;
@@ -46,50 +51,73 @@ public class UserController {
     }
 
     @GetMapping(value = {"/email/{email}"})
-    public ResponseEntity<UserDto> getUserByEmail(@PathVariable("email") String email) {
+    public ResponseEntity<?> getUserByEmail(@PathVariable("email") String email) {
+        try {
 
-        return presenter.presentSuccess(
-                userByEmail.execute(email)
-        );
+            return presenter.presentSuccess(userByEmail.execute(email));
+        } catch (UserAPIException userAPIException) {
+
+            return presenter.presentFailure(userAPIException);
+        }
     }
 
     @PutMapping("/update")
-    public ResponseEntity<UserDto> updateUser(@Valid @RequestBody UserDto userDto){
+    public ResponseEntity<?> updateUser(@Valid @RequestBody UserDto userDto) {
+        try {
 
-        return new ResponseEntity<>(updateUser.execute(userDto), HttpStatus.OK);
+            return presenter.presentSuccess(updateUser.execute(userMapper.mapToModel(userDto)));
+        } catch (UserAPIException userAPIException) {
+
+            return presenter.presentFailure(userAPIException);
+        }
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createUser(@Valid @RequestBody UserDto userDto){
+    public ResponseEntity<?> createUser(@Valid @RequestBody UserDto userDto) {
 
         return new ResponseEntity<>(createUser.execute(userMapper.mapToModel(userDto)), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteUser(HttpServletRequest request){
-        String token = jwtAuthenticationFilter.getTokenFromRequest(request);
-        jwtTokenProvider.validateToken(token);
-        String email = jwtTokenProvider.getUsername(token);
+    public ResponseEntity<?> deleteUser(HttpServletRequest request) {
+        try {
+            String token = jwtAuthenticationFilter.getTokenFromRequest(request);
+            jwtTokenProvider.validateToken(token);
+            String email = jwtTokenProvider.getUsername(token);
 
-        return new ResponseEntity<>(deleteUser.execute(email), HttpStatus.OK);
+            return presenter.presentSuccess(deleteUser.execute(email));
+        } catch (UserAPIException userAPIException) {
+
+            return presenter.presentFailure(userAPIException);
+        }
     }
 
     @GetMapping(value = {"/actual"})
     public ResponseEntity<?> getUser(HttpServletRequest request) {
-        String token = jwtAuthenticationFilter.getTokenFromRequest(request);
-        jwtTokenProvider.validateToken(token);
-        String email = jwtTokenProvider.getUsername(token);
+        try {
+            String token = jwtAuthenticationFilter.getTokenFromRequest(request);
+            jwtTokenProvider.validateToken(token);
+            String email = jwtTokenProvider.getUsername(token);
 
-        return ResponseEntity.ok(userByEmail.execute(email));
+            return presenter.presentSuccess(userByEmail.execute(email));
+        } catch (UserAPIException userAPIException) {
+
+            return presenter.presentFailure(userAPIException);
+        }
     }
 
     @GetMapping("/all")
-    public ResponseEntity<?> getAllUser(HttpServletRequest request){
-        String token = jwtAuthenticationFilter.getTokenFromRequest(request);
-        jwtTokenProvider.validateToken(token);
-        String email = jwtTokenProvider.getUsername(token);
+    public ResponseEntity<?> getAllUser(HttpServletRequest request) {
+        try {
+            String token = jwtAuthenticationFilter.getTokenFromRequest(request);
+            jwtTokenProvider.validateToken(token);
+            String email = jwtTokenProvider.getUsername(token);
 
-        return ResponseEntity.ok(allUser.execute(email));
+            return presenter.presentSuccess(allUser.execute(email));
+        } catch (UserAPIException userAPIException) {
+
+            return presenter.presentFailure(userAPIException);
+        }
     }
 
 }

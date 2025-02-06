@@ -1,4 +1,4 @@
-package com.microservice.user.domain.entities;
+package com.microservice.user.application.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,8 +10,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Role {
-
     private long id;
     private String name;
-
 }

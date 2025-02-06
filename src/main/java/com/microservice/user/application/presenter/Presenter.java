@@ -1,13 +1,15 @@
 package com.microservice.user.application.presenter;
 
 import com.microservice.user.application.entity.UserDto;
-import com.microservice.user.application.exception.UserAPIException;
 import com.microservice.user.application.mapper.UserMapper;
-import com.microservice.user.infrastructure.entity.User;
-import jdk.jshell.spi.ExecutionControl;
+import com.microservice.user.domain.entities.User;
+import com.microservice.user.domain.exception.UserAPIException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class Presenter {
@@ -22,15 +24,16 @@ public class Presenter {
         return new ResponseEntity<>(userMapper.mapToDTO(user), HttpStatus.OK);
     }
 
+    public ResponseEntity<List<UserDto>> presentSuccess(List<User> users) {
+        return new ResponseEntity<>(users.stream().map(userMapper::mapToDTO).collect(Collectors.toList()), HttpStatus.OK);
+    }
+
     public ResponseEntity<String> presentSuccess(String successResponse) {
         return new ResponseEntity<>(successResponse, HttpStatus.OK);
     }
 
-    public ResponseEntity<UserAPIException> presentFailure(ExecutionControl.UserException userException) {
-        return new ResponseEntity<>(
-                new UserAPIException(HttpStatus.BAD_REQUEST, userException.getMessage()),
-                HttpStatus.BAD_REQUEST
-        );
+    public ResponseEntity<UserAPIException> presentFailure(UserAPIException userAPIException) {
+        return new ResponseEntity<>(userAPIException, HttpStatus.BAD_REQUEST);
     }
 
 }

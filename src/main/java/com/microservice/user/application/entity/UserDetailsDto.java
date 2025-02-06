@@ -1,7 +1,10 @@
 package com.microservice.user.application.entity;
 
-import com.microservice.user.domain.entities.Role;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Set;
 
@@ -11,7 +14,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserDetailsDto {
-    String email;
-    String password;
-    Set<Role> roles;
+    private String email;
+    private String password;
+    private Set<Role> roles;
 }
