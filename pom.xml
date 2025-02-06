@@ -8,10 +8,10 @@
     <version>3.1.4</version>
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
-  <groupId>com.microservice.user</groupId>
-  <artifactId>springboot-user-rest-api</artifactId>
+  <groupId>com.microservice.userEntity</groupId>
+  <artifactId>springboot-userEntity-rest-api</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <name>springboot-user-rest-api</name>
+  <name>springboot-userEntity-rest-api</name>
   <description>Spring boot hotel application rest api</description>
   <properties>
     <java.version>21</java.version>

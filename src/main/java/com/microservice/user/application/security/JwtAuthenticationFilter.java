@@ -1,7 +1,7 @@
-package com.microservice.user.security;
+package com.microservice.user.application.security;
 
-import com.microservice.user.domain.gateway.UserDetailsDto;
-import com.microservice.user.utils.JsonBodyHandler;
+import com.microservice.user.application.entity.UserDetailsDto;
+import com.microservice.user.JsonBodyHandler;
 import io.micrometer.common.lang.NonNullApi;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -32,8 +32,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    @Value("${authentification.user_details}")
-    private String authentificationUserDetailsURL;
+    @Value("${authentication.user_details}")
+    private String authenticationUserDetailsURL;
 
     private final HttpClient client;
 
@@ -51,19 +51,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if(StringUtils.hasText(token) && jwtTokenProvider.validateToken(token)){
 
-            UserDetailsDto userDetailsDto = getUserDetailsDtoFromAuthentificationAPI(token);
-            setAuthentification(request, userDetailsDto);
+            UserDetailsDto userDetailsDto = getUserDetailsDtoFromAuthenticationAPI(token);
+            setAuthentication(request, userDetailsDto);
 
         }
 
         filterChain.doFilter(request, response);
     }
 
-    private UserDetailsDto getUserDetailsDtoFromAuthentificationAPI(String token) {
+    private UserDetailsDto getUserDetailsDtoFromAuthenticationAPI(String token) {
 
         UserDetailsDto userDetailsDto;
         HttpRequest getUserDetails = HttpRequest.newBuilder(
-                        URI.create(authentificationUserDetailsURL)
+                        URI.create(authenticationUserDetailsURL)
                 )
                 .header("accept", "application/json")
                 .header("Authorization", "Bearer " + token)
@@ -82,7 +82,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     }
 
-    private void setAuthentification(HttpServletRequest request, UserDetailsDto userDetailsDto) {
+    private void setAuthentication(HttpServletRequest request, UserDetailsDto userDetailsDto) {
 
         Set<GrantedAuthority> authorities = userDetailsDto
                 .getRoles()

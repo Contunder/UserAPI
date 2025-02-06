@@ -1,4 +1,4 @@
-package com.microservice.user.security;
+package com.microservice.user.application.security;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

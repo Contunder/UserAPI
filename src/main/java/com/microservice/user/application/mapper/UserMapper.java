@@ -31,16 +31,4 @@ public class UserMapper {
                 .build();
     }
 
-    public User mapUpdateToModel(UserDto userDto, User user) {
-        user.setName(userDto.getName());
-        user.setLastName(userDto.getLastName());
-        user.setBirthday(userDto.getBirthday());
-        user.setAddress(userDto.getAddress());
-        user.setZipCode(userDto.getZipCode());
-        user.setCity(userDto.getCity());
-        user.setEmail(userDto.getEmail());
-
-        return user;
-    }
-
 }
