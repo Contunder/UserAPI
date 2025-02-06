@@ -1,27 +1,24 @@
 
-# Sup Hotel API
+# User API
 
 ## Feature
 
 - CRUD User
 - User Management
-- Token Generator
-- CRUD Hotel
-- Open Day Hotel
-- Search Hotel
+- CRUD User
 - Github Action
 - Docker
 
-  - #### Not Finish :
-    - Booking CRUD
-    - Booking Option
-    - Booking Price
+## Need for work
+
+- AuthenticationAPI : https://github.com/Contunder/Authentication
+- TrackingAPI : https://github.com/Contunder/Tracking
 
 ## Coverage 
 
 ## Links 
 - Github  
-  - Back End Java API : https://github.com/Contunder/SupHotelAPI  
+  - Back End Java API : https://github.com/Contunder/UserAPI  
   - Front End React : https://github.com/Contunder/SupHotelReact  
   
 
