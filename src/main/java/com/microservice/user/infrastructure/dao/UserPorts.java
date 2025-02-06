@@ -1,6 +1,6 @@
-package com.microservice.user.domain.ports;
+package com.microservice.user.infrastructure.dao;
 
-import com.microservice.user.domain.entities.User;
+import com.microservice.user.infrastructure.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

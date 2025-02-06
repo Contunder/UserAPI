@@ -1,4 +1,4 @@
-package com.microservice.user.utils;
+package com.microservice.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 

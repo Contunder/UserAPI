@@ -1,7 +1,7 @@
 package com.microservice.user.application.mapper;
 
 import com.microservice.user.application.entity.UserDto;
-import com.microservice.user.domain.entities.User;
+import com.microservice.user.infrastructure.entity.User;
 import org.springframework.stereotype.Component;
 
 @Component

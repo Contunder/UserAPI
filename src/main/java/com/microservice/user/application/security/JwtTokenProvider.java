@@ -1,4 +1,4 @@
-package com.microservice.user.security;
+package com.microservice.user.application.security;
 
 import com.microservice.user.application.exception.UserAPIException;
 import io.jsonwebtoken.Claims;

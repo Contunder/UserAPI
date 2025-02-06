@@ -1,9 +1,10 @@
 package com.microservice.user.application.controller;
 
+import com.microservice.user.application.mapper.UserMapper;
 import com.microservice.user.application.presenter.Presenter;
 import com.microservice.user.domain.usecase.*;
-import com.microservice.user.security.JwtAuthenticationFilter;
-import com.microservice.user.security.JwtTokenProvider;
+import com.microservice.user.application.security.JwtAuthenticationFilter;
+import com.microservice.user.application.security.JwtTokenProvider;
 import com.microservice.user.application.entity.UserDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -18,8 +19,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
@@ -32,8 +31,9 @@ public class UserController {
     private final CreateUser createUser;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtTokenProvider jwtTokenProvider;
+    private final UserMapper userMapper;
 
-    public UserController(UserByEmail userByEmail, Presenter presenter, AllUser allUser, DeleteUser deleteUser, UpdateUser updateUser, CreateUser createUser, JwtAuthenticationFilter jwtAuthenticationFilter, JwtTokenProvider jwtTokenProvider){
+    public UserController(UserByEmail userByEmail, Presenter presenter, AllUser allUser, DeleteUser deleteUser, UpdateUser updateUser, CreateUser createUser, JwtAuthenticationFilter jwtAuthenticationFilter, JwtTokenProvider jwtTokenProvider, UserMapper userMapper){
         this.userByEmail = userByEmail;
         this.presenter = presenter;
         this.allUser = allUser;
@@ -42,6 +42,7 @@ public class UserController {
         this.createUser = createUser;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.userMapper = userMapper;
     }
 
     @GetMapping(value = {"/email/{email}"})
@@ -59,9 +60,9 @@ public class UserController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDto){
+    public ResponseEntity<?> createUser(@Valid @RequestBody UserDto userDto){
 
-        return new ResponseEntity<>(createUser.execute(userDto), HttpStatus.OK);
+        return new ResponseEntity<>(createUser.execute(userMapper.mapToModel(userDto)), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete")
@@ -74,7 +75,7 @@ public class UserController {
     }
 
     @GetMapping(value = {"/actual"})
-    public ResponseEntity<UserDto> getUser(HttpServletRequest request) {
+    public ResponseEntity<?> getUser(HttpServletRequest request) {
         String token = jwtAuthenticationFilter.getTokenFromRequest(request);
         jwtTokenProvider.validateToken(token);
         String email = jwtTokenProvider.getUsername(token);
@@ -83,7 +84,7 @@ public class UserController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<UserDto>> getAllUser(HttpServletRequest request){
+    public ResponseEntity<?> getAllUser(HttpServletRequest request){
         String token = jwtAuthenticationFilter.getTokenFromRequest(request);
         jwtTokenProvider.validateToken(token);
         String email = jwtTokenProvider.getUsername(token);

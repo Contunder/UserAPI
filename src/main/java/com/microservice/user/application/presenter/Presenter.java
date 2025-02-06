@@ -1,8 +1,10 @@
 package com.microservice.user.application.presenter;
 
 import com.microservice.user.application.entity.UserDto;
+import com.microservice.user.application.exception.UserAPIException;
 import com.microservice.user.application.mapper.UserMapper;
-import com.microservice.user.domain.entities.User;
+import com.microservice.user.infrastructure.entity.User;
+import jdk.jshell.spi.ExecutionControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -24,9 +26,9 @@ public class Presenter {
         return new ResponseEntity<>(successResponse, HttpStatus.OK);
     }
 
-    public ResponseEntity<AuthenticationAPIException> presentFailure(UserException userException) {
+    public ResponseEntity<UserAPIException> presentFailure(ExecutionControl.UserException userException) {
         return new ResponseEntity<>(
-                new AuthenticationAPIException(HttpStatus.BAD_REQUEST, userException.getMessage()),
+                new UserAPIException(HttpStatus.BAD_REQUEST, userException.getMessage()),
                 HttpStatus.BAD_REQUEST
         );
     }

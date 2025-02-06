@@ -1,7 +1,7 @@
-package com.microservice.user.security;
+package com.microservice.user.application.security;
 
-import com.microservice.user.domain.gateway.UserDetailsDto;
-import com.microservice.user.utils.JsonBodyHandler;
+import com.microservice.user.application.entity.UserDetailsDto;
+import com.microservice.user.JsonBodyHandler;
 import io.micrometer.common.lang.NonNullApi;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

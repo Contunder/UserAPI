@@ -1,12 +1,10 @@
 package com.microservice.user.domain.usecase;
 
-import com.microservice.user.domain.entities.User;
+import com.microservice.user.infrastructure.entity.User;
 import com.microservice.user.domain.gateway.TrackingDTO;
-import com.microservice.user.application.entity.UserDto;
 import com.microservice.user.domain.mapper.TrackingMapper;
-import com.microservice.user.application.mapper.UserMapper;
-import com.microservice.user.domain.ports.UserPorts;
-import com.microservice.user.utils.JsonBodyHandler;
+import com.microservice.user.infrastructure.dao.UserPorts;
+import com.microservice.user.JsonBodyHandler;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
