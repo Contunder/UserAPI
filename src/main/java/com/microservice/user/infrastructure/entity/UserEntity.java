@@ -21,7 +21,6 @@ public class UserEntity {
     private String name;
     @Column(nullable = false)
     private String lastName;
-    @Column(nullable = false)
     private Date birthday;
     private String address;
     private String zipCode;
