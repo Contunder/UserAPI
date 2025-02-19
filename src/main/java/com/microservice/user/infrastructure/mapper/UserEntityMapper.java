@@ -5,7 +5,7 @@ import com.microservice.user.infrastructure.entity.UserEntity;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserMapper {
+public class UserEntityMapper {
 
     public UserEntity mapToEntity(User user){
         return UserEntity.builder()
