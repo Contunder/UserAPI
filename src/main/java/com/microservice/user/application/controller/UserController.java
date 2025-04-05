@@ -11,10 +11,12 @@ import com.microservice.user.domain.usecase.CreateUser;
 import com.microservice.user.domain.usecase.DeleteUser;
 import com.microservice.user.domain.usecase.UpdateUser;
 import com.microservice.user.domain.usecase.UserByEmail;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -92,6 +94,7 @@ public class UserController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping(value = {"/actual"})
     public ResponseEntity<?> getUser(HttpServletRequest request) {
         try {
